@@ -85,4 +85,22 @@ class UsersController extends Controller
             'users' => $followers,
         ]);
     }
+
+    /**
+     * ユーザーがお気に入りに追加した Micropost の一覧ページを表示するアクション。
+     *
+     * @param  $id  ユーザーのid
+     * @return \Illuminate\Http\Response
+     */
+    public function favorites($id)
+    {
+        $user = User::findOrFail($id);
+        $user->loadRelationshipCounts();
+        $favorites = $user->favorites()->paginate(10);
+
+        return view('users.favorites', [
+            'user' => $user,
+            'microposts' => $favorites,
+        ]);
+    }
 }

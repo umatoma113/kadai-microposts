@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\MicropostsController;
 use App\Http\Controllers\UserFollowController;
+use App\Http\Controllers\FavoritesController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +38,14 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
     Route::resource('microposts', MicropostsController::class, ['only' => ['store', 'destroy']]);
+
+    Route::prefix('microposts/{id}')->group(function () {
+        Route::post('favorite', [FavoritesController::class, 'store'])->name('micropost.favorite');
+        Route::delete('unfavorite', [FavoritesController::class, 'destroy'])->name('micropost.unfavorite');
+        Route::get('favorites', [FavoritesController::class, 'index'])->name('favorites.index');
+    });
+
+    Route::get('users/{id}/favorites', [UsersController::class, 'favorites'])->name('users.favorites');
 });
 
 require __DIR__.'/auth.php';
